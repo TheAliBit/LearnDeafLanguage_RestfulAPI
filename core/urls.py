@@ -19,5 +19,4 @@ urlpatterns = [
     path('refresh/', RefreshAPIView.as_view(), name='refresh'),
     path('profile/', ProfileView.as_view(), name='profile'),
     path('set_premium/', SetPremiumView.as_view(), name='set_premium'),
-
 ]
