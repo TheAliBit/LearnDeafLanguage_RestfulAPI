@@ -4,7 +4,7 @@ from .views import CategoryViewSet, WordViewSet
 
 router = DefaultRouter()
 router.register(r'categories', CategoryViewSet)
-router.register(r'Words', WordViewSet)
+router.register(r'words', WordViewSet)
 
 urlpatterns = [
     path('', include(router.urls))

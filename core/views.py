@@ -155,14 +155,18 @@
 #     return response
 
 
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
+from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.db import transaction
 from .serializers.registration_serializers import SignupSerializer, LoginSerializer, RefreshSerializer
+from .serializers.Profile_serializers import ProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from django.contrib.auth import authenticate
 from .utils import black_list_refresh_token, get_access_from_refresh  # Ensure these utility functions are imported
+from core.models  import Profile
 
 
 class SignupAPIView(generics.CreateAPIView):
@@ -219,3 +223,12 @@ class RefreshAPIView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         access = get_access_from_refresh(serializer.data['refresh'])
         return Response(data={'access': access}, status=status.HTTP_200_OK)
+
+
+class ProfileView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serializer = ProfileSerializer(user)
+        return Response(serializer.data)

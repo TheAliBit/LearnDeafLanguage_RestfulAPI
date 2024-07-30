@@ -14,7 +14,7 @@ class CategoryViewSet(ModelViewSet):
 
 
 class WordViewSet(ModelViewSet):
-    queryset = Word.objects.all()
+    queryset = Word.objects.prefetch_related('category').all()
     serializer_class = WordSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['category']
