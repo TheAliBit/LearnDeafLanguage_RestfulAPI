@@ -20,7 +20,7 @@ class SignupSerializer(serializers.ModelSerializer):
         fields = [
             'phone_number', 'password',
             'first_name', 'last_name',
-            'age', 'birth_date', 'email', 'avatar'
+            'birth_date', 'email', 'avatar'
         ]
 
     def validate_phone_number(self, value):
@@ -66,12 +66,33 @@ class SignupSerializer(serializers.ModelSerializer):
             if domain not in allowed_domains:
                 raise serializers.ValidationError(
                     f'ایمیل باید یکی از این دامنه‌ها را داشته باشد: {", ".join(allowed_domains)}')
-        else:
             return data
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        password = validated_data.pop('password')
+        username = validated_data.pop('phone_number')
+        user = User.objects.create_user(username=username,
+                                        password=password, **validated_data)
         return user
+    # def create(self, validated_data):
+    #     # Extract the password and remove it from validated_data
+    #     password = validated_data.pop('password')
+    #
+    #     # Check if `phone_number` is used as the username
+    #     if 'phone_number' in validated_data:
+    #         username = validated_data.pop('phone_number')
+    #     else:
+    #         # Handle if `phone_number` is not present
+    #         raise serializers.ValidationError("Phone number is required")
+    #
+    #     # Create the user with the appropriate fields
+    #     user = User.objects.create_user(
+    #         username=username,
+    #         password=password,
+    #         **validated_data
+    #     )
+    #
+    #     return user
 
 
 class LoginSerializer(serializers.Serializer):

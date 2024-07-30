@@ -11,7 +11,7 @@ class Profile(AbstractUser):
     password = models.CharField(max_length=128, verbose_name='رمز عبور')
     first_name = models.CharField(blank=True, null=True, max_length=255, verbose_name='نام')
     last_name = models.CharField(max_length=255, blank=True, null=True, verbose_name='نام خانوادگی')
-    age = models.PositiveIntegerField(blank=True, null=True, verbose_name='سن')
+    # age = models.PositiveIntegerField(blank=True, null=True, verbose_name='سن')
     birth_date = models.DateField(blank=True, null=True, verbose_name='تاریخ تولد')
     email = models.EmailField(blank=True, null=True, verbose_name='ایمیل')
     membership = models.BooleanField(default=False, verbose_name='عضویت')
