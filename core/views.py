@@ -166,7 +166,7 @@ from .serializers.Profile_serializers import ProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from django.contrib.auth import authenticate
 from .utils import black_list_refresh_token, get_access_from_refresh  # Ensure these utility functions are imported
-from core.models  import Profile
+from core.models import Profile
 
 
 class SignupAPIView(generics.CreateAPIView):
@@ -232,3 +232,18 @@ class ProfileView(APIView):
         user = request.user
         serializer = ProfileSerializer(user)
         return Response(serializer.data)
+
+
+# here i add the view for change the user to premium
+class SetPremiumView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    # for changing a user membershib and etc we should use post method not get or anything else
+    def post(self, request):
+        try:
+            user_profile = Profile.objects.get(id=request.user.id)
+            user_profile.membership = True
+            user_profile.save()
+            return Response({"message": "به کار طلایی تبدیل شدید!"}, status=status.HTTP_200_OK)
+        except Profile.DoesNotExist:
+            return Response({"error:": "چنین کاربری وجود ندارد!"})
