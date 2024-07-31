@@ -22,6 +22,3 @@ urlpatterns = [
     path('api/registration/', include('core.urls')),
     path('api/apps/', include('words.urls')),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

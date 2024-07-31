@@ -162,3 +162,5 @@ SIMPLE_JWT = {
 # settings.py
 
 MEDIA_URL = '/uploads/'
+
+BASE_URL = "https://192.168.1.1:8000/"

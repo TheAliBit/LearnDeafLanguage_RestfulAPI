@@ -43,24 +43,19 @@ class WordViewSet(ModelViewSet):
 
 # writing the exam APIView
 class ExamViewSet(ViewSet):
-    def get(self, request):
+    def list(self, request):
         # ordering objects in a random order and slice the first 4
-        words = Word.objects.order_by('?')[:4]
-
+        # don't user order_by '?' it's a very bad query
+        # words = Word.objects.order_by('?')[:4] -> -X-
+        word_ids = Word.objects.values_list('id', flat=True)
+        # Randomly select 4 unique primary keys
+        random_ids = random.sample(list(word_ids), 4)
+        random_words = Word.objects.filter(id__in=random_ids)
         # serializing the word instances
-        serializer = SimpleWordSerializer(words, many=True)
+        serializer = SimpleWordSerializer(random_words, many=True)
 
         response_data = {
-            "exam": serializer.data,
-            "correct_word": random.choices(serializer.data)
+            "exam": serializer.data
         }
         return Response(response_data, status=status.HTTP_200_OK)
 
-    def create(self, request):
-        correct_word_id = request.data.get('correct_word_id')
-        chosen_word_id = request.data.get('chosen_word_id')
-
-        if chosen_word_id == correct_word_id:
-            return Response({"درست گفتی!"}, status=status.HTTP_200_OK)
-        else:
-            return Response({"اشتباه گفتی!"}, status=status.HTTP_200_OK)
