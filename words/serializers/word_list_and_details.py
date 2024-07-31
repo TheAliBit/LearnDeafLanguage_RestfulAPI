@@ -15,3 +15,12 @@ class WordSerializer(serializers.ModelSerializer):
 # use a empty serializer to avoid using other serializer in the post method
 class EmptySerializer(serializers.Serializer):
     ...
+
+
+# simple word serializer to show id and title
+class SimpleWordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Word
+        fields = [
+            'id', 'title', 'image'
+        ]
