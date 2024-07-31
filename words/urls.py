@@ -5,6 +5,7 @@ from .views import CategoryViewSet, WordViewSet
 router = DefaultRouter()
 router.register(r'categories', CategoryViewSet)
 router.register(r'words', WordViewSet)
+# router.register('quiz', ...)
 
 urlpatterns = [
     path('', include(router.urls))

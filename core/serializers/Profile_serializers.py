@@ -1,11 +1,26 @@
 from rest_framework import serializers
 from core.models import Profile
+from words.models import Word
+
+
+class WordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Word
+        fields = [
+            'id', 'title', 'image'
+        ]
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    liked_words = serializers.SerializerMethodField()
+
     class Meta:
         model = Profile
         fields = [
             'username', 'first_name', 'last_name',
-            'birth_date', 'email', 'membership', 'liked_words', 'avatar'
+            'birth_date', 'email', 'membership', 'avatar', 'liked_words'
         ]
+
+    def get_liked_words(self, obj):
+        list = Word.objects.filter(liked_by=obj)
+        return WordSerializer(list, many=True).data
