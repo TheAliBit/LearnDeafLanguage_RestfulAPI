@@ -1,3 +1,4 @@
+from LDL import settings
 from rest_framework import serializers
 from words.serializers.word_list_and_details import SimpleWordSerializer
 from core.models import Profile
@@ -19,7 +20,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         return SimpleWordSerializer(list, many=True).data
 
     def to_representation(self, instance):
-        ret = super().to_representation(instance)
-        ret['author']['url'] = reverse('author-detail', args=[instance.author.id], request=self.context.get('request'))
-        ret['url'] = reverse('book-detail', args=[instance.id], request=self.context.get('request'))
-        return ret
+        result = super().to_representation(instance)
+        result['avatar'] = settings.DOMAIN + instance.avatar.url if instance.avatar     else None
+        return result

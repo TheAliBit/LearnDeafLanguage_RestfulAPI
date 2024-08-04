@@ -1,18 +1,21 @@
+from LDL import settings
+from words.models import Word
 from rest_framework import serializers
-from words.models import Word, Category
-from words.serializers.category_serializers import CategorySerializer
 
 
 class WordSerializer(serializers.ModelSerializer):
-    category_id = serializers.IntegerField(source='category.id', read_only=True)
-    category_title = serializers.CharField(source='category.title', read_only=True)
-
     class Meta:
         model = Word
-        fields = ['id', 'title', 'explanation', 'image', 'video', 'category_id', 'category_title']
+        fields = ['id', 'title', 'explanation', 'image', 'video', 'category']
+
+    def to_representation(self, instance):
+        result = super().to_representation(instance)
+        result['image'] = settings.DOMAIN + instance.image.url if instance.image else None
+        result['video'] = settings.DOMAIN + instance.video.url if instance.video else None
+        return result
 
 
-# use a empty serializer to avoid using other serializer in the post method
+# use an empty serializer to avoid using other serializer in the post method
 class EmptySerializer(serializers.Serializer):
     ...
 
@@ -24,3 +27,20 @@ class SimpleWordSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'image'
         ]
+
+    def to_representation(self, instance):
+        result = super().to_representation(instance)
+        result['image'] = settings.DOMAIN + instance.image.url if instance.image else None
+        return result
+
+
+# simple word serializer to show video
+class VSimpleWordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Word
+        fields = ['id', 'video']
+
+    def to_representation(self, instance):
+        result = super().to_representation(instance)
+        result['video'] = settings.DOMAIN + instance.video.url if instance.video else None
+        return result

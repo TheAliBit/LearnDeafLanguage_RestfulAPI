@@ -1,15 +1,7 @@
-# from django.urls import path
-# from .views import signup, login, logout, refresh_token, protected_view
-#
-# urlpatterns = [
-#     path('signup/', signup, name='signup'),
-#     path('login/', login, name='login'),
-#     path('logout/', logout, name='logout'),
-#     path('refresh-token/', refresh_token, name='refresh_token'),
-#     path('protected/', protected_view, name='protected_view'),
-# ]
-
+from django.conf.urls.static import static
 from django.urls import path
+
+from LDL import settings
 from .views import SignupAPIView, LoginAPIView, LogoutAPIView, RefreshAPIView, ProfileView, SetPremiumView
 
 urlpatterns = [

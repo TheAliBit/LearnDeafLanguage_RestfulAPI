@@ -18,3 +18,8 @@ class CategorySerializer(serializers.ModelSerializer):
         # Use values_list to get only the ids of the children
         children_ids = Category.objects.filter(parent=obj).values_list('id', flat=True)
         return children_ids
+
+    def to_representation(self, instance):
+        result = super().to_representation(instance)
+        result['image'] = settings.DOMAIN + instance.image.url if instance.image else None
+        return result

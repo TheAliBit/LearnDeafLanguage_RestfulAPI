@@ -3,13 +3,14 @@ import random
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.viewsets import ModelViewSet, GenericViewSet, ViewSet
+from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Category, Word
 from .serializers.category_serializers import CategorySerializer
-from .serializers.word_list_and_details import WordSerializer, EmptySerializer, SimpleWordSerializer
+from .serializers.word_list_and_details import WordSerializer, EmptySerializer, SimpleWordSerializer, \
+    VSimpleWordSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 
 
@@ -21,7 +22,7 @@ class CategoryViewSet(ModelViewSet):
 
 
 class WordViewSet(ModelViewSet):
-    queryset = Word.objects.prefetch_related('category').all()
+    queryset = Word.objects.all()
     serializer_class = WordSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['category']
@@ -59,3 +60,13 @@ class ExamViewSet(ViewSet):
         }
         return Response(response_data, status=status.HTTP_200_OK)
 
+
+# Here i want to add the sentence building section
+class SentenceMakerAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        word_ids = request.data.get('ids')
+        if not word_ids or not isinstance(word_ids, list):
+            return Response({'error': 'A list of IDs is required'}, status=status.HTTP_400_BAD_REQUEST)
+        words = Word.objects.filter(id__in=word_ids)
+        serializer = VSimpleWordSerializer(words, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

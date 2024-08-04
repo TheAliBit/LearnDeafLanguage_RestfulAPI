@@ -26,6 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = []
+DOMAIN = 'http://127.0.0.1:8000'
 
 # Application definition
 
@@ -160,7 +161,5 @@ SIMPLE_JWT = {
 }
 
 # settings.py
-
-MEDIA_URL = '/uploads/'
-
-BASE_URL = "https://192.168.1.1:8000/"
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

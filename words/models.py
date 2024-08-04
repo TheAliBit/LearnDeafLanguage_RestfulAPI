@@ -1,9 +1,9 @@
 from django.core.validators import FileExtensionValidator
-from django.db import models
 from django.utils.text import slugify
+from django.db import models
 
 
-# Create your models here.
+
 class Category(models.Model):
     title = models.CharField(max_length=255, verbose_name='عنوان دسته بندی')
     image = models.ImageField(blank=True, null=True, upload_to='uploads/',
