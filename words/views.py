@@ -16,14 +16,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 
 # TODO: add permissions for views
-# TODO: add pagination
+# TODO: add pagination : DONE
 # TODO: move filter backends to settings.py
 
+# TODO: return parent none categories when no filter applied
 class CategoryViewSet(ModelViewSet):
-    # TODO: return parent none categories when no filter applied
     queryset = Category.objects.order_by('id')
     serializer_class = CategorySerializer
-    filter_backends = [DjangoFilterBackend]
     filterset_fields = ['parent']
 
 

@@ -44,8 +44,7 @@ class LoginAPIView(generics.CreateAPIView):
 
 class LogoutAPIView(generics.CreateAPIView):
     serializer_class = RefreshSerializer
-    # permission_classes = [IsAuthenticated]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
