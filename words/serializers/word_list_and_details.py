@@ -6,28 +6,26 @@ from rest_framework import serializers
 class WordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Word
-        fields = ['id', 'title', 'explanation', 'image', 'video', 'category']
-
-    def to_representation(self, instance):
-        result = super().to_representation(instance)
-        result['image'] = settings.DOMAIN + \
-            instance.image.url if instance.image else None
-        result['video'] = settings.DOMAIN + \
-            instance.video.url if instance.video else None
-        return result
-
-
-class PremiumWordSerializer(serializers.ModelSerailizer):
-    class Meta:
-        model = Word
         fields = ['id', 'title', 'explanation', 'image', 'category']
 
     def to_representation(self, instance):
         result = super().to_representation(instance)
         result['image'] = settings.DOMAIN + \
-            instance.image.url if instance.image else None
+                          instance.image.url if instance.image else None
+        return result
+
+
+class PremiumWordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Word
+        fields = ['id', 'title', 'explanation', 'image', 'video', 'category']
+
+    def to_representation(self, instance):
+        result = super().to_representation(instance)
+        result['image'] = settings.DOMAIN + \
+                          instance.image.url if instance.image else None
         result['video'] = settings.DOMAIN + \
-            instance.video.url if instance.video else None
+                          instance.video.url if instance.video else None
         return result
 
 
@@ -47,7 +45,7 @@ class SimpleWordSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         result = super().to_representation(instance)
         result['image'] = settings.DOMAIN + \
-            instance.image.url if instance.image else None
+                          instance.image.url if instance.image else None
         return result
 
 
@@ -60,5 +58,5 @@ class VSimpleWordSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         result = super().to_representation(instance)
         result['video'] = settings.DOMAIN + \
-            instance.video.url if instance.video else None
+                          instance.video.url if instance.video else None
         return result

@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from .models import Category, Word
 from .serializers.category_serializers import CategorySerializer
 from .serializers.word_list_and_details import WordSerializer, EmptySerializer, SimpleWordSerializer, \
-    VSimpleWordSerializer
+    VSimpleWordSerializer, PremiumWordSerializer
 
 
 # TODO: add permissions for views
@@ -26,9 +26,16 @@ class CategoryViewSet(ModelViewSet):
 class WordViewSet(ModelViewSet):
     # TODO: remove video field for false membership users
     queryset = Word.objects.order_by('id')
-    serializer_class = WordSerializer
     filterset_fields = ['category']
     search_fields = ['title']
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        profile = self.request.user
+        is_premium = profile.membership
+        if is_premium:
+            return PremiumWordSerializer
+        return WordSerializer
 
     # liking and unliking the word
     @action(detail=True, methods=['post'], url_path='like-and-unlike', serializer_class=EmptySerializer)
