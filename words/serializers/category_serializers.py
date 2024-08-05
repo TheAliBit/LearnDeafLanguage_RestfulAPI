@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from LDL import settings
 from words.models import Category
 
