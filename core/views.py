@@ -75,7 +75,7 @@ class ProfileView(APIView):
         return Response(serializer.data)
 
 
-# here i add the view for change the user to premium
+# Here I add the view for change the user to premium
 class SetPremiumView(APIView):
     permission_classes = [IsAuthenticated]
 
