@@ -1,18 +1,15 @@
 import random
-
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet, ViewSet
-from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Category, Word
 from .serializers.category_serializers import CategorySerializer
 from .serializers.word_list_and_details import WordSerializer, EmptySerializer, SimpleWordSerializer, \
     VSimpleWordSerializer
-from django_filters.rest_framework import DjangoFilterBackend
 
 
 # TODO: add permissions for views
@@ -30,7 +27,6 @@ class WordViewSet(ModelViewSet):
     # TODO: remove video field for false membership users
     queryset = Word.objects.order_by('id')
     serializer_class = WordSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['category']
     search_fields = ['title']
 
