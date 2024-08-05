@@ -14,25 +14,22 @@ from .serializers.word_list_and_details import WordSerializer, EmptySerializer, 
     VSimpleWordSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 
+
 # TODO: add permissions for views
 # TODO: add pagination
 # TODO: move filter backends to settings.py
 
 class CategoryViewSet(ModelViewSet):
     # TODO: return parent none categories when no filter applied
-    queryset = Category.objects.all()
+    queryset = Category.objects.order_by('id')
     serializer_class = CategorySerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['parent']
 
 
-
 class WordViewSet(ModelViewSet):
-    """
-    example description
-    """
     # TODO: remove video field for false membership users
-    queryset = Word.objects.all()
+    queryset = Word.objects.order_by('id')
     serializer_class = WordSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['category']
@@ -50,6 +47,7 @@ class WordViewSet(ModelViewSet):
         else:
             profile.liked_words.add(word)
             return Response({'message': 'کلمه با موفقیت به لیست علاقه مندی ها اضافه شد!'}, status=status.HTTP_200_OK)
+
 
 # TODO: add video exam for membership true users
 # writing the exam APIView
@@ -74,6 +72,7 @@ class ExamViewSet(ViewSet):
 # Here i want to add the sentence building section
 class SentenceMakerAPIView(APIView):
     permission_classes = [IsAuthenticated]
+
     def post(self, request, *args, **kwargs):
         word_ids = request.data.get('ids')
         if not word_ids or not isinstance(word_ids, list):
