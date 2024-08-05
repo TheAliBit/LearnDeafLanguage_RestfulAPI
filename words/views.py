@@ -3,6 +3,7 @@ import random
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
@@ -13,15 +14,24 @@ from .serializers.word_list_and_details import WordSerializer, EmptySerializer, 
     VSimpleWordSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 
+# TODO: add permissions for views
+# TODO: add pagination
+# TODO: move filter backends to settings.py
 
 class CategoryViewSet(ModelViewSet):
+    # TODO: return parent none categories when no filter applied
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['parent']
 
 
+
 class WordViewSet(ModelViewSet):
+    """
+    example description
+    """
+    # TODO: remove video field for false membership users
     queryset = Word.objects.all()
     serializer_class = WordSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
@@ -36,12 +46,12 @@ class WordViewSet(ModelViewSet):
 
         if word in profile.liked_words.all():
             profile.liked_words.remove(word)
-            return Response({'کلمه با موفقیت از لیست علاقه مندی ها حذف شد!'}, status=status.HTTP_200_OK)
+            return Response({'message': 'کلمه با موفقیت از لیست علاقه مندی ها حذف شد!'}, status=status.HTTP_200_OK)
         else:
             profile.liked_words.add(word)
-            return Response({'کلمه با موفقیت به لیست علاقه مندی ها اضافه شد!'}, status=status.HTTP_200_OK)
+            return Response({'message': 'کلمه با موفقیت به لیست علاقه مندی ها اضافه شد!'}, status=status.HTTP_200_OK)
 
-
+# TODO: add video exam for membership true users
 # writing the exam APIView
 class ExamViewSet(ViewSet):
     def list(self, request):
@@ -63,6 +73,7 @@ class ExamViewSet(ViewSet):
 
 # Here i want to add the sentence building section
 class SentenceMakerAPIView(APIView):
+    permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
         word_ids = request.data.get('ids')
         if not word_ids or not isinstance(word_ids, list):

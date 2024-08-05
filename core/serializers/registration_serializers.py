@@ -59,14 +59,14 @@ class SignupSerializer(serializers.ModelSerializer):
         email = data.get('email')
         allowed_domains = ['gmail.com', 'yahoo.com', 'outlook.com']
 
-        if last_name == first_name:
-            raise serializers.ValidationError('نام خانوادگی نمی تواند با نام یکی باشد')
-        elif email:
+        # if last_name == first_name:
+        #     raise serializers.ValidationError('نام خانوادگی نمی تواند با نام یکی باشد')
+        if email:
             domain = email.split('@')[1]
             if domain not in allowed_domains:
                 raise serializers.ValidationError(
                     f'ایمیل باید یکی از این دامنه‌ها را داشته باشد: {", ".join(allowed_domains)}')
-            return data
+        return data
 
     def create(self, validated_data):
         password = validated_data.pop('password')

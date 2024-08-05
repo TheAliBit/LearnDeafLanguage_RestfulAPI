@@ -5,19 +5,19 @@ from words.models import Category
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    children = serializers.SerializerMethodField()
+    # DONE: if category is parent null,  must have picture
 
     class Meta:
         model = Category
         fields = ['id', 'title', 'image', 'parent', 'children']
 
-    # def get_children(self, obj):
-    #     children = Category.objects.filter(parent=obj)
-    #     return CategorySerializer(children, many=True).data
-    def get_children(self, obj):
-        # Use values_list to get only the ids of the children
-        children_ids = Category.objects.filter(parent=obj).values_list('id', flat=True)
-        return children_ids
+    # Custom validation
+    def validate(self, data):
+        parent = data.get('parent')
+        image = data.get('image')
+        if parent is None and not image:
+            raise serializers.ValidationError({'message': '!دسته بندی های اصلی نمیتوانند بدون عکس باشند'})
+        return data
 
     def to_representation(self, instance):
         result = super().to_representation(instance)
