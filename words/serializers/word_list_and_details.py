@@ -1,3 +1,5 @@
+from rest_framework.exceptions import ValidationError
+
 from LDL import settings
 from words.models import Word
 from rest_framework import serializers
@@ -7,6 +9,13 @@ class WordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Word
         fields = ['id', 'title', 'explanation', 'image', 'category']
+
+    def validate(self, attrs):
+        title = attrs.get('title')
+        if title:
+            if Word.objects.filter(title=title).exists():
+                raise ValidationError({'message': '!کلمه تکراری است'})
+        return attrs
 
     def to_representation(self, instance):
         result = super().to_representation(instance)
@@ -19,6 +28,13 @@ class PremiumWordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Word
         fields = ['id', 'title', 'explanation', 'image', 'video', 'category']
+
+    def validate(self, attrs):
+        title = attrs.get('title')
+        if title:
+            if Word.objects.filter(title=title).exists():
+                raise ValidationError({'message': '!کلمه تکراری است'})
+        return attrs
 
     def to_representation(self, instance):
         result = super().to_representation(instance)
