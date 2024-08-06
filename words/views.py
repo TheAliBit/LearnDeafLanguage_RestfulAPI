@@ -19,6 +19,13 @@ class CategoryViewSet(ModelViewSet):
     serializer_class = CategorySerializer
     filterset_fields = ['parent']
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        parent_param = self.request.query_params.get('parent', None)
+        if parent_param is None:
+            queryset = queryset.filter(parent__isnull=True)
+        return queryset
+
 
 class WordViewSet(ModelViewSet):
     queryset = Word.objects.order_by('id')
@@ -46,7 +53,6 @@ class WordViewSet(ModelViewSet):
             return Response({'message': 'کلمه با موفقیت به لیست علاقه مندی ها اضافه شد!'}, status=status.HTTP_200_OK)
 
 
-# TODO: add video exam for membership true users
 class ExamViewSet(ViewSet):
     def list(self, request):
         word_ids = Word.objects.values_list('id', flat=True)
