@@ -67,7 +67,7 @@ class RefreshAPIView(generics.CreateAPIView):
 
 
 class ProfileView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user

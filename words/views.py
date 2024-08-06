@@ -10,11 +10,12 @@ from .models import Category, Word
 from .serializers.category_serializers import CategorySerializer
 from .serializers.word_list_and_details import WordSerializer, EmptySerializer, SimpleWordSerializer, \
     VSimpleWordSerializer, PremiumWordSerializer, SimpleWordSerializerWithVideo
+from .permissions import IsSuperUser
 
 
 # TODO: add permissions for views
 class CategoryViewSet(ModelViewSet):
-    # TODO: return parent none categories when no filter applied
+    permission_classes = [IsAuthenticated, IsSuperUser]
     queryset = Category.objects.order_by('id')
     serializer_class = CategorySerializer
     filterset_fields = ['parent']
@@ -28,10 +29,10 @@ class CategoryViewSet(ModelViewSet):
 
 
 class WordViewSet(ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset = Word.objects.order_by('id')
     filterset_fields = ['category']
     search_fields = ['title']
-    permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         profile = self.request.user
@@ -54,6 +55,8 @@ class WordViewSet(ModelViewSet):
 
 
 class ExamViewSet(ViewSet):
+    permission_classes = [IsAuthenticated]
+
     def list(self, request):
         word_ids = Word.objects.values_list('id', flat=True)
         random_ids = random.sample(list(word_ids), 4)
@@ -67,6 +70,8 @@ class ExamViewSet(ViewSet):
 
 
 class PremiumExamViewSet(ViewSet):
+    permission_classes = [IsAuthenticated]
+
     def list(self, request):
         profile = request.user
         is_premium = profile.membership
