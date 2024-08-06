@@ -29,7 +29,7 @@ class CategoryViewSet(ModelViewSet):
 
 
 class WordViewSet(ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsSuperUser]
     queryset = Word.objects.order_by('id')
     filterset_fields = ['category']
     search_fields = ['title']
