@@ -49,6 +49,20 @@ class SimpleWordSerializer(serializers.ModelSerializer):
         return result
 
 
+class SimpleWordSerializerWithVideo(serializers.ModelSerializer):
+    class Meta:
+        model = Word
+        fields = [
+            'id', 'title', 'image', 'video'
+        ]
+
+    def to_representation(self, instance):
+        result = super().to_representation(instance)
+        result['image'] = settings.DOMAIN + instance.image.url if instance.image else None
+        result['video'] = settings.DOMAIN + instance.video.url if instance.video else None
+        return result
+
+
 # simple word serializer to show video
 class VSimpleWordSerializer(serializers.ModelSerializer):
     class Meta:
@@ -57,6 +71,5 @@ class VSimpleWordSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         result = super().to_representation(instance)
-        result['video'] = settings.DOMAIN + \
-                          instance.video.url if instance.video else None
+        result['video'] = settings.DOMAIN + instance.video.url if instance.video else None
         return result

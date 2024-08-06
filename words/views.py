@@ -9,13 +9,10 @@ from rest_framework.views import APIView
 from .models import Category, Word
 from .serializers.category_serializers import CategorySerializer
 from .serializers.word_list_and_details import WordSerializer, EmptySerializer, SimpleWordSerializer, \
-    VSimpleWordSerializer, PremiumWordSerializer
+    VSimpleWordSerializer, PremiumWordSerializer, SimpleWordSerializerWithVideo
 
 
 # TODO: add permissions for views
-# TODO: add pagination : DONE
-# TODO: move filter backends to settings.py : DONE
-
 class CategoryViewSet(ModelViewSet):
     # TODO: return parent none categories when no filter applied
     queryset = Category.objects.order_by('id')
@@ -24,7 +21,6 @@ class CategoryViewSet(ModelViewSet):
 
 
 class WordViewSet(ModelViewSet):
-    # TODO: remove video field for false membership users
     queryset = Word.objects.order_by('id')
     filterset_fields = ['category']
     search_fields = ['title']
@@ -37,7 +33,6 @@ class WordViewSet(ModelViewSet):
             return PremiumWordSerializer
         return WordSerializer
 
-    # liking and unliking the word
     @action(detail=True, methods=['post'], url_path='like-and-unlike', serializer_class=EmptySerializer)
     def like_unlike(self, request, pk=None):
         word = get_object_or_404(Word, pk=pk)
@@ -52,17 +47,11 @@ class WordViewSet(ModelViewSet):
 
 
 # TODO: add video exam for membership true users
-# writing the exam APIView
 class ExamViewSet(ViewSet):
     def list(self, request):
-        # ordering objects in a random order and slice the first 4
-        # don't user order_by '?' it's a very bad query
-        # words = Word.objects.order_by('?')[:4] -> -X-
         word_ids = Word.objects.values_list('id', flat=True)
-        # Randomly select 4 unique primary keys
         random_ids = random.sample(list(word_ids), 4)
         random_words = Word.objects.filter(id__in=random_ids)
-        # serializing the word instances
         serializer = SimpleWordSerializer(random_words, many=True)
 
         response_data = {
@@ -71,7 +60,23 @@ class ExamViewSet(ViewSet):
         return Response(response_data, status=status.HTTP_200_OK)
 
 
-# Here i want to add the sentence building section
+class PremiumExamViewSet(ViewSet):
+    def list(self, request):
+        profile = request.user
+        is_premium = profile.membership
+        if not (is_premium):
+            return Response({'message': '!برای دسترسی به این بخش باید کاربر ویژه باشید'},
+                            status=status.HTTP_403_FORBIDDEN)
+        word_ids = Word.objects.values_list('id', flat=True)
+        random_ids = random.sample(list(word_ids), 4)
+        random_words = Word.objects.filter(id__in=random_ids)
+        serializer = SimpleWordSerializerWithVideo(random_words, many=True)
+        response_data = {
+            "exam": serializer.data
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
+
+
 class SentenceMakerAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
