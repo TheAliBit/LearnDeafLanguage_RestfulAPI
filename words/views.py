@@ -13,7 +13,6 @@ from .serializers.word_list_and_details import WordSerializer, EmptySerializer, 
 from .permissions import IsSuperUser
 
 
-# TODO: add permissions for views
 class CategoryViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated, IsSuperUser]
     queryset = Category.objects.order_by('id')
